@@ -111,4 +111,11 @@ runTM = function(community,
   return(out)
 }
 
-
+#' Print a fitted TraitMatchingResult model
+#' 
+#' @param x a model fitted by \code{\link{runTM}}
+#' @param ... optional arguments for compatibility with the generic function, no function implemented
+#' @export
+print.TraitMatchingResult = function(x, ...) {
+  x$result$result
+}
