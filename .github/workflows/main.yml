@@ -41,6 +41,4 @@ jobs:
           sudo -s eval "$sysreqs"
       - name: Check
         run: |
-          cd TraitMatching
-          rcmdcheck::rcmdcheck(args = "--no-manual", error_on = "error")
-        shell: Rscript {0}
+          Rscript -e "rcmdcheck::rcmdcheck(path = 'TraitMatching/', args = '--no-manual', error_on = 'warning', check_dir = 'check')"
