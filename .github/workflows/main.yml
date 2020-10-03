@@ -37,9 +37,13 @@ jobs:
         run: |
           cd TraitMatching
           Rscript -e "install.packages('remotes')" -e "remotes::install_github('r-hub/sysreqs')" -e "remotes::install_cran('rcmdcheck')"
-          Rscript -e "install.packages(c('ranger', 'kknn', 'e1071', 'xgboost'))"
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
+      - name: Install dependencies
+        run: |
+          cd TraitMatching
+          Rscript -e "install.packages('remotes')" -e "remotes::install_github('r-hub/sysreqs')" -e "remotes::install_cran('rcmdcheck')"
+          Rscript -e "install.packages(c('ranger', 'kknn', 'e1071', 'xgboost'))"
       - name: Check
         run: |
           Rscript -e "rcmdcheck::rcmdcheck(path = 'TraitMatching/', args = '--no-manual', error_on = 'warning', check_dir = 'check')"
