@@ -1,6 +1,6 @@
 # TraitMatching package
 
-This is a new implementation of the TraitMatching (see https://github.com/TheoreticalEcology/Pichler-et-al-2019 )package based on mlr3.
+This is a new implementation of the TraitMatching (see https://github.com/TheoreticalEcology/Pichler-et-al-2019 ) package based on mlr3.
 
 More about using machine learning for TraitMatching: https://doi.org/10.1111/2041-210X.13329
 

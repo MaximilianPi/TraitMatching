@@ -113,7 +113,7 @@ getSVMparamSet = function(extra, prefix) {
            paradox::ParamInt$new(pf("degree"), lower = 1, upper = 5),
            #paradox::ParamDbl$new(pf("nu"), lower = 0.3, upper = 0.7),
            paradox::ParamDbl$new(pf("coef0"), lower = -3, upper = 3),
-           paradox::ParamFct$new(pf("type"), levels = SVMtypes, default = SVMtypes[1])
+           paradox::ParamFct$new(pf("type"), levels = SVMtypes[1], default = SVMtypes[1])
       ))
   
   if(extra$type == "classif") {
