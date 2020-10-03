@@ -14,7 +14,7 @@ runTM(
   iters = 20L,
   crossValidation = list(outer = list(method = "CV", iters = 10), inner = list(method =
     "CV", iters = 3)),
-  balance = c(FALSE, "oversample", "undersample", "smote"),
+  balance = c("no", "oversample", "undersample", "smote"),
   seed = 42
 )
 }

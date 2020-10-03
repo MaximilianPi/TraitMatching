@@ -28,7 +28,7 @@ runTM = function(community,
                  crossValidation = list(
                    outer = list(method = "CV", iters = 10),
                    inner = list(method = "CV", iters = 3)),
-                 balance = c(FALSE, "oversample", "undersample", "smote"),
+                 balance = c("no", "oversample", "undersample", "smote"),
                  seed = 42){
   
   set.seed(seed)
@@ -40,13 +40,15 @@ runTM = function(community,
   tune = match.arg(tune)
   metric = match.arg(metric)
   balance = match.arg(balance)
-  if(balance == "FALSE") balance = FALSE
+  if(balance == "no") balance = FALSE
 
   out = list()
 
   type = class(community)[2]
 
   out$type = type
+  
+  if(type == "regr") balance = FALSE
 
   task =
     if(type == "classif") { mlr3::TaskClassif$new(id = "classif_community", backend = community$data[, -c(1,2)], target = community$target, positive = "positive")
@@ -99,7 +101,7 @@ runTM = function(community,
   design = mlr3::benchmark_grid(task, learners, resamplings = resampleStrat$outer)
   result = mlr3::benchmark(design, store_models = TRUE)
   
-  summary = as.data.table(result,measures = measures, reassemble_learners = TRUE, convert_predictions = TRUE, predict_sets = "test")
+  summary = data.table::as.data.table(result,measures = measures, reassemble_learners = TRUE, convert_predictions = TRUE, predict_sets = "test")
   res = result$aggregate(measures)
   
   out$design = design

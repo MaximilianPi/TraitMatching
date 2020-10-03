@@ -24,13 +24,13 @@ tests = list(
   list(c("RF", "BRT"), "AUC", communityC, "grid", "smote"),
   list(c("kNN", "RF"), "AUC", communityC, "random", "smote"),
   list(c("kNN", "RF", "SVM"), "AUC", communityC, "random", "smote"),
-  list("RF", "R2", communityR, "grid", "smote"),
-  list(c("RF", "BRT"), "R2", communityR, "random", "smote"),
-  list(c("kNN", "RF"), "Spear", communityR, "grid", "smote"),
-  list(c("kNN", "RF", "SVM"), "Spear", communityR, "random", "smote"),
-  list(c("kNN", "RF", "SVM", "BRT"), "Spear", communityR, "random", FALSE),
-  list(c("kNN", "RF", "SVM", "BRT"), "Spear", communityR, "random", "oversample"),
-  list(c("kNN", "RF", "SVM", "BRT"), "Spear", communityR, "random", "undersample")
+  list("RF", "R2", communityR, "grid", "no"),
+  list(c("RF", "BRT"), "R2", communityR, "random", "no"),
+  list(c("kNN", "RF"), "Spear", communityR, "grid", "no"),
+  list(c("kNN", "RF", "SVM"), "Spear", communityR, "random", "no"),
+  list(c("kNN", "RF", "SVM", "BRT"), "AUC", communityC, "random", "no"),
+  list(c("kNN", "RF", "SVM", "BRT"), "AUC", communityC, "random", "oversample"),
+  list(c("kNN", "RF", "SVM", "BRT"), "AUC", communityC, "random", "undersample")
 )
 
 testthat::test_that('runTM', {
