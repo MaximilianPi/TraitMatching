@@ -1,0 +1,25 @@
+Package: TraitMatching
+Title: Analysis of bipartite networks
+Version: 0.0.0.9000
+Authors@R: person("Maximilian", "Pichler", email = "Maximilian.Pichler@ur.de", role = c("aut", "cre"))
+Description: TraitMatching package
+Depends: R (>= 3.3.2)
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Imports: 
+    mlr3,
+    mlr3learners,
+    mlr3pipelines,
+    mlr3measures,
+    mlr3tuning,
+    paradox,
+    knitr,
+    missForest,
+    rowr
+RoxygenNote: 7.1.1
+Suggests:
+    testthat,
+    roxygen2
+VignetteBuilder: knitr
+Roxygen: list(markdown = TRUE)
