@@ -11,10 +11,9 @@
 #' @param iters Number of tuning steps
 #' @param crossValidation List for CV plan. See details.
 #' @param balance How to balance classes. Default is oversampling "Over".
-#' @param block ...
 #' @param seed set seed
-#' @param keepModels Whether to return all fitted Models or not.
 #'
+#' @example /inst/examples/example-runTM.R
 #' @author Maximilian Pichler
 #' @export
 
@@ -30,18 +29,18 @@ runTM = function(community,
                    outer = list(method = "CV", iters = 10),
                    inner = list(method = "CV", iters = 3)),
                  balance = c(FALSE, "oversample", "undersample", "smote"),
-                 block = NULL,
-                 seed = 42,
-                 keepModels = c(TRUE, FALSE)){
+                 seed = 42){
+  
+  set.seed(seed)
 
   stopifnot(
-    any(!method %in% c("RF", "SVM", "kNN", "DNN", "BRT")),
+    any(method %in% c("RF", "SVM", "kNN", "DNN", "BRT")),
     inherits(community, "Community")
   )
   tune = match.arg(tune)
   metric = match.arg(metric)
   balance = match.arg(balance)
-  keepModels = match.arg(keepModels)
+  if(balance == "FALSE") balance = FALSE
 
   out = list()
 
@@ -71,7 +70,7 @@ runTM = function(community,
   terminator = mlr3tuning::trm("evals", n_evals = iters)
   tuner =
     if(tune == "random") { mlr3tuning::tnr("random_search")
-    } else { mlr3tuning::tnr("grid_search", resolution = 20L) }
+    } else { mlr3tuning::tnr("grid_search", resolution = 5L) }
 
   ## Measurement ##
   measures = getMeasure(metric, type)
@@ -99,7 +98,15 @@ runTM = function(community,
 
   design = mlr3::benchmark_grid(task, learners, resamplings = resampleStrat$outer)
   result = mlr3::benchmark(design, store_models = TRUE)
-
+  
+  summary = as.data.table(result,measures = measures, reassemble_learners = TRUE, convert_predictions = TRUE, predict_sets = "test")
+  res = result$aggregate(measures)
+  
+  out$design = design
+  out$result = list(result_raw = result, tabular = summary, result = res)
+  out$extra = extra
+  class(out) = "TraitMatchingResult"
+  return(out)
 }
 
 

@@ -16,7 +16,8 @@ Imports:
     paradox,
     knitr,
     missForest,
-    rowr
+    rowr,
+    lgr
 RoxygenNote: 7.1.1
 Suggests:
     testthat,

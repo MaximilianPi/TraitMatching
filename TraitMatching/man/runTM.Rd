@@ -15,9 +15,7 @@ runTM(
   crossValidation = list(outer = list(method = "CV", iters = 10), inner = list(method =
     "CV", iters = 3)),
   balance = c(FALSE, "oversample", "undersample", "smote"),
-  block = NULL,
-  seed = 42,
-  keepModels = c(TRUE, FALSE)
+  seed = 42
 )
 }
 \arguments{
@@ -39,14 +37,20 @@ runTM(
 
 \item{balance}{How to balance classes. Default is oversampling "Over".}
 
-\item{block}{...}
-
 \item{seed}{set seed}
-
-\item{keepModels}{Whether to return all fitted Models or not.}
 }
 \description{
 Fit, tune and cross-validate a TM model
+}
+\examples{
+
+sim = simulateInteraction(weights = list(main = 0.1, inter = c(0.3,0.3,0.3)))
+A = sim$A
+B = sim$B
+Z = sim$binar()
+community = createCommunity(A, B, Z)
+
+result = runTM(community = community)
 }
 \author{
 Maximilian Pichler

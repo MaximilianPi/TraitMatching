@@ -9,7 +9,6 @@
 #' @param pairs two fields with a and b (only vector of length(a) == 1 allowed)
 #'
 #' @references Friedman, J. H. & Popescu, B. E. (2008), 'Predictive learning via rule ensembles', Ann. Appl. Stat. 2(3), 916--954.
-#' @export
 #' @author Maximilian Pichler
 
 pairwise_interaction = function(data = NULL,
@@ -95,7 +94,6 @@ pairwise_interaction = function(data = NULL,
 #' @param target target variable, character
 #'
 #' @references Friedman, J. H. & Popescu, B. E. (2008), 'Predictive learning via rule ensembles', Ann. Appl. Stat. 2(3), 916--954.
-#' @export
 #' @author Maximilian Pichler
 
 any_interaction = function(data = NULL,
@@ -178,7 +176,6 @@ any_interaction = function(data = NULL,
 #' @param any_n_times mean of any_n_times overall interaction strength
 #' @param parallel if FALSE no parallelization, otherwise numerical(n) cores are used
 #'
-#' @export
 #' @author Maximilian Pichler
 get_Interaction_Strengths = function(data,
                                      model,

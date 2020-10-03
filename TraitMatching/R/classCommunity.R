@@ -52,7 +52,7 @@ createCommunity = function(a = NULL, b = NULL, z = NULL, community = NULL, respo
     classCommunity$target = interDataList$target
     classCommunity$type = interDataList$type
 
-    if(classCommunity$type == "Classification") {
+    if(classCommunity$type == "classif") {
       if(is.null(positive)) classCommunity$positive = interDataList$positive
     }
   }
@@ -172,11 +172,11 @@ createInter = function(impData, z, log){
         XYZ[XYZ == "X1"] <- "positive"
         XYZ[XYZ == "X0"] <- "negative"
         XYZ[,ncol(XYZ)] <- as.factor(XYZ[,ncol(XYZ)])
-        out$type = "Classification"
+        out$type = "classif"
         out$positive = "positive"
         colnames(XYZ)[ncol(XYZ)] <- "target"
       } else {
-        out$type = "Regression"
+        out$type = "regr"
         colnames(XYZ)[ncol(XYZ)] <- "target"
         # xCount = apply(Z,1,sum)
         # yCount = apply(Z,2,sum)

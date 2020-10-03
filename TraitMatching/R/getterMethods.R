@@ -68,15 +68,7 @@ getParamSets = function(method = "RF", extra = NULL, prefix = "") {
                 RF = getRFparamSet(extra, prefix),
                 kNN = getKNNparamSet(extra, prefix),
                 SVM = getSVMparamSet(extra, prefix),
-                BRT= list(paradox::ParamDbl$new(paste0(prefix, "xgboost.alpha"), lower = 0.0, upper = 3.0),
-                          paradox::ParamFct$new(paste0(prefix, "xgboost.booster"), levels = c("gbtree", "gblinear", "dart"), default = "gbtree"),
-                          paradox::ParamDbl$new(paste0(prefix, "xgboost.eta"),lower = 0.0, upper = 3.0),
-                          paradox::ParamFct$new(paste0(prefix, "xgboost.feature_selector"), levels = c("cyclic", "shuffle", "random", "greedy", "thrifty"), default = "cyclic"),
-                          paradox::ParamDbl$new(paste0(prefix, "xgboost.gamma"), lower = 0.0, upper = 3.0),
-                          paradox::ParamDbl$new(paste0(prefix, "xgboost.lambda"), lower = 0.0, 5.0),
-                          paradox::ParamDbl$new(paste0(prefix, "xgboost.lambda_bias"), lower = 0.0,upper = 5.0),
-                          paradox::ParamInt$new(paste0(prefix, "xgboost.max_depth"), lower = 1L, upper = 50L ),
-                          paradox::ParamInt$new(paste0(prefix, "xgboost.nrounds"), lower = 1L, upper = 80L))
+                BRT= getBRTparamSet(extra, prefix)
                 
   )
   return(pars)
@@ -90,8 +82,7 @@ getRFparamSet = function(extra, prefix) {
   
   return(
     paradox::ParamSet$new(
-      list(paradox::ParamDbl$new(pf("alpha"), lower = 0.0, upper = 1.0),
-           paradox::ParamInt$new(pf("min.node.size"), lower = 1, upper = 30L),
+      list(paradox::ParamInt$new(pf("min.node.size"), lower = 1, upper = 30L),
            paradox::ParamInt$new(pf("mtry"), lower = 1, upper = extra$n_features),
            paradox::ParamLgl$new(pf("regularization.usedepth"), default = TRUE))))
 }
@@ -120,7 +111,8 @@ getSVMparamSet = function(extra, prefix) {
       list(paradox::ParamFct$new(pf("kernel"), levels=c("linear", "polynomial", "radial", "sigmoid"), default = "radial"),
            paradox::ParamDbl$new(pf("gamma"), lower = 0.0, upper = 5),
            paradox::ParamInt$new(pf("degree"), lower = 1, upper = 5),
-           paradox::ParamDbl$new(pf("nu"), lower = 0, upper = 3),
+           #paradox::ParamDbl$new(pf("nu"), lower = 0.3, upper = 0.7),
+           paradox::ParamDbl$new(pf("coef0"), lower = -3, upper = 3),
            paradox::ParamFct$new(pf("type"), levels = SVMtypes, default = SVMtypes[1])
       ))
   
@@ -128,10 +120,38 @@ getSVMparamSet = function(extra, prefix) {
     pars$add(paradox::ParamDbl$new(pf("cost"), lower = 0, upper = 3))
     pars$add_dep(pf("cost"), pf("type"),cond = paradox::CondEqual$new(SVMtypes[1]))
   } else {
-    pars$add(paradox::ParamDbl$new(pf("eps"), lower = 0, upper = 1))
-    pars$add_dep(pf("eps"), pf("type"),cond = paradox::CondEqual$new(SVMtypes[1]))
+    pars$add(paradox::ParamDbl$new(pf("epsilon"), lower = 0, upper = 1))
+    pars$add_dep(pf("epsilon"), pf("type"),cond = paradox::CondEqual$new(SVMtypes[1]))
   }
-  pars$add_dep(pf("nu"), pf("type"),cond = paradox::CondEqual$new(SVMtypes[2]))
+  #pars$add_dep(pf("nu"), pf("type"),cond = paradox::CondEqual$new(SVMtypes[2]))
   pars$add_dep(pf("degree"), pf("kernel"), cond = paradox::CondEqual$new("polynomial"))
+  pars$add_dep(pf("gamma"), pf("kernel"), cond = paradox::CondAnyOf$new(c("polynomial", "radial", "sigmoid")))
+  pars$add_dep(pf("coef0"), pf("kernel"), cond = paradox::CondAnyOf$new(c("polynomial", "sigmoid")))
+  return(pars)
+}
+
+
+getBRTparamSet = function(extra, prefix) {
+  if(!is.logical(extra$balance)) pf = function(p2) paste0(prefix,"xgboost.", p2)
+  else pf = function(p2) p2
+  
+  pars = 
+    paradox::ParamSet$new(
+      list(paradox::ParamDbl$new(pf("alpha"), lower = 0.0, upper = 3.0),
+           paradox::ParamFct$new(pf("booster"), levels = c("gbtree", "gblinear", "dart"), default = "gbtree"),
+           paradox::ParamDbl$new(pf("eta"),lower = 0.0, upper = 1.0),
+           paradox::ParamFct$new(pf("feature_selector"), levels = c("cyclic", "shuffle"), default = "cyclic"),
+           paradox::ParamDbl$new(pf("gamma"), lower = 0.0, upper = 5.0),
+           paradox::ParamDbl$new(pf("lambda"), lower = 0.0, 5.0),
+           paradox::ParamDbl$new(pf("skip_drop"), lower = 0.0, 1.0),
+           paradox::ParamDbl$new(pf("rate_drop"), lower = 0.0, 1.0),
+           paradox::ParamDbl$new(pf("lambda_bias"), lower = 0.0,upper = 5.0),
+           paradox::ParamInt$new(pf("max_depth"), lower = 1L, upper = 50L ),
+           paradox::ParamInt$new(pf("nrounds"), lower = 1L, upper = 80L))
+    )
+  pars$add_dep(pf("feature_selector"), pf("booster"), cond = paradox::CondEqual$new("gblinear"))
+  pars$add_dep(pf("skip_drop"), pf("booster"), cond = paradox::CondEqual$new("dart"))
+  pars$add_dep(pf("rate_drop"), pf("booster"), cond = paradox::CondEqual$new("dart"))
+  
   return(pars)
 }
