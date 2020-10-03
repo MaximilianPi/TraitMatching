@@ -117,7 +117,7 @@ mergeCommunities = function(data){
 }
 
 
-
+#' Create Interactions
 #' @param impData imputed groups or inter
 #' @param z interaction matrix
 #' @param log log

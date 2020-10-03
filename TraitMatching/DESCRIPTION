@@ -14,13 +14,18 @@ Imports:
     mlr3measures,
     mlr3tuning,
     paradox,
-    knitr,
     missForest,
     rowr,
-    lgr
+    lgr,
+    reshape2
 RoxygenNote: 7.1.1
 Suggests:
     testthat,
+    kknn,
+    ranger,
+    xgboost,
+    e1071,
+    knitr,
     roxygen2
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)

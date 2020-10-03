@@ -2,9 +2,6 @@ library(testthat)
 library(TraitMatching)
 
 
-requireNamespace("lgr")
-lgr::get_logger("mlr3")$set_threshold("warn")
-lgr::get_logger("mlr3tuning")$set_threshold("warn")
 
 terminator = mlr3tuning::trm("evals", n_evals = 30L)
 tuner = mlr3tuning::tnr("random_search")

@@ -15,7 +15,7 @@ createSpecies(
   speciesClass = NULL,
   specialist = T,
   coLin = NULL,
-  sampling = function(n) runif(n, 0, 1),
+  sampling = function(n) stats::runif(n, 0, 1),
   specRange = c(1, 2)
 )
 }
