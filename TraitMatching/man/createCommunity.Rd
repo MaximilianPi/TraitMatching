@@ -11,8 +11,8 @@ createCommunity(
   community = NULL,
   response = NULL,
   positive = NULL,
-  impute = T,
-  log = T
+  impute = TRUE,
+  log = TRUE
 )
 }
 \arguments{
@@ -24,13 +24,13 @@ createCommunity(
 
 \item{community, }{list with communities/groups or data.frames}
 
+\item{response, }{in case of community, provide name of response column}
+
 \item{positive, }{in case of community, provide the positive class}
 
 \item{impute, }{missing values in a and b will be imputed}
 
 \item{log}{= T, log(x+1) will be applied to response (for count data)}
-
-\item{target, }{in case of community, provide name of response column}
 }
 \description{
 create Community object for \code{\link{runTM}}

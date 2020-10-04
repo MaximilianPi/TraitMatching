@@ -22,9 +22,9 @@ checkInput(
 
 \item{community, }{list with communities/groups or data.frames}
 
-\item{positive, }{in case of community, provide the positive class}
+\item{response, }{in case of community, provide name of response column}
 
-\item{target, }{in case of community, provide name of response column}
+\item{positive, }{in case of community, provide the positive class}
 }
 \description{
 check function for input

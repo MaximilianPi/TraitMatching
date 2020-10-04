@@ -14,11 +14,11 @@
 #'@param specialist logical if group B should be specialized or not
 #'@param coLin you can set collinear traits (not fully supported yet)
 #'@param sampling sampling function for traits, default runif(n,0,1)
-#'@param specRanger specialization range, default c(1,2)
+#'@param specRange specialization range, default c(1,2)
 #'@export
 
 createSpecies = function(NumberA = 20, NumberB = 40, traitsA = c(0,8), traitsB = c(0,8), rangeDiscrete = 2:8,seed = 1337, abundance = 2,
-                         speciesClass = NULL, specialist = T, coLin = NULL, sampling = function(n) stats::runif(n, 0,1), specRange = c(1,2)){
+                         speciesClass = NULL, specialist = TRUE, coLin = NULL, sampling = function(n) stats::runif(n, 0,1), specRange = c(1,2)){
   spec = specialist
 
   if(!is.null(speciesClass)){
@@ -60,8 +60,8 @@ createSpecies = function(NumberA = 20, NumberB = 40, traitsA = c(0,8), traitsB =
 
   if(!is.null(coLin)){
     for(i in 1:length(coLin)){
-      if(names(coLin)[i] %in% colnames(A)) A[,names(coLin)[i]] =  model.matrix(coLin[[i]], data = A)[,2]
-      else B[,names(coLin)[i]] =  model.matrix(coLin[[i]], data = B)[,2]
+      if(names(coLin)[i] %in% colnames(A)) A[,names(coLin)[i]] =  stats::model.matrix(coLin[[i]], data = A)[,2]
+      else B[,names(coLin)[i]] =  stats::model.matrix(coLin[[i]], data = B)[,2]
     }
   }
 
@@ -118,18 +118,13 @@ createSpecies = function(NumberA = 20, NumberB = 40, traitsA = c(0,8), traitsB =
 
 
 
-#' create discrete
-#' @param nD number discrete
-#' @param range range of discrete
-#'
-
 createDiscrete = function(range){
 
   Nlevels = sample(range, 1)
   prob = sample.int(Nlevels+1,Nlevels)
 
   create = function(n){
-    discreteV = sample(1:Nlevels, size = n, prob = prob, replace = T)
+    discreteV = sample(1:Nlevels, size = n, prob = prob, replace = TRUE)
     f = as.factor(discreteV)
     levels(f) = 1:length(levels(f))
     discreteV = as.integer(f)
@@ -151,6 +146,7 @@ createDiscrete = function(range){
 #' @param inter two column matrix of trait-matching effects
 #' @param weights list of two vectors for main and inter (trait-matching) effect weights
 #' @param reSim output of simulateInteraction
+#' @param setSeed use seed in simulation
 #' @param ... arguments passed to createSpecies function, see details
 #'
 #' @details
@@ -164,7 +160,7 @@ createDiscrete = function(range){
 #'
 #' @export
 
-simulateInteraction = function(species = NULL, main = NULL, inter = matrix(c("A1", "B1","A2", "B2","A3", "B3"), ncol = 2, nrow = 3, byrow = T),
+simulateInteraction = function(species = NULL, main = NULL, inter = matrix(c("A1", "B1","A2", "B2","A3", "B3"), ncol = 2, nrow = 3, byrow = TRUE),
                                weights = list(main = 1, inter = c(1,4,2)),
                                reSim = NULL,
                                setSeed = 42,
@@ -240,7 +236,7 @@ simulateInteraction = function(species = NULL, main = NULL, inter = matrix(c("A1
         } else {
           interTraits[[k]]$both = FALSE
           if(any(whichD)){
-            if(which(whichD, arr.ind = T) == 1) {
+            if(which(whichD, arr.ind = TRUE) == 1) {
               interTraits[[k]]$which = 1
               interTraits[[k]]$mean = stats::rnorm(length(unique(species$A[,paar[1]])),0,1)
               interTraits[[k]]$weight = weights[["inter"]][k]

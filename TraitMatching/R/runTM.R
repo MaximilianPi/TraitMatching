@@ -7,7 +7,7 @@
 #' @param method Which ML algorithm to be used. RF, knn, SVM, DNN, CNN, boost, ngBinDNN, naive, or CNN. See details. "RF" is default
 #' @param tune How to tune ML parameters. We support only "random" at the moment.
 #' @param metric Which predictive measurement should be used for tuning. "AUC" is default. See details.
-#' @param parallel boolean or numeric. See details.
+#' @param parallel boolean or numeric. See details (not yet supported).
 #' @param iters Number of tuning steps
 #' @param crossValidation List for CV plan. See details.
 #' @param balance How to balance classes. Default is oversampling "Over".
@@ -87,7 +87,7 @@ runTM = function(community,
   if(!is.logical(balance)) {
     balanceLearner = getBalanceMethod(balance)
     pars = lapply(pars, function(p) p$add(balanceLearner$pars))
-    learners = lapply(learners, function(l) mlr3pipelines::GraphLearner$new(mlr3pipelines:::`%>>%`(balanceLearner$po, l) ))
+    learners = lapply(learners, function(l) mlr3pipelines::GraphLearner$new(mlr3pipelines::`%>>%`(balanceLearner$po, l) ))
   }
   learners = lapply(1:length(learners),
     function(i) {
@@ -117,5 +117,5 @@ runTM = function(community,
 #' @param ... optional arguments for compatibility with the generic function, no function implemented
 #' @export
 print.TraitMatchingResult = function(x, ...) {
-  x$result$result
+  print(x$result$result)
 }

@@ -6,13 +6,13 @@
 #' @param b, group b
 #' @param z, interaction matrix for a and b, rows == a and cols == b
 #' @param community, list with communities/groups or data.frames
-#' @param target, in case of community, provide name of response column
+#' @param response, in case of community, provide name of response column
 #' @param positive, in case of community, provide the positive class
 #' @param impute, missing values in a and b will be imputed
 #' @param log = T, log(x+1) will be applied to response (for count data)
 #' @export
 
-createCommunity = function(a = NULL, b = NULL, z = NULL, community = NULL, response = NULL, positive = NULL, impute = T, log = T){
+createCommunity = function(a = NULL, b = NULL, z = NULL, community = NULL, response = NULL, positive = NULL, impute = TRUE, log = TRUE){
 
   classCommunity = list()
 
@@ -144,7 +144,7 @@ createInter = function(impData, z, log){
 
       XY_id <- rowr::cbind.fill(X_id, Y_id, fill = NA)
       XY_id <- expand.grid(XY_id)
-      XY_id <- XY_id[complete.cases(as.matrix(XY_id)),]
+      XY_id <- XY_id[stats::complete.cases(as.matrix(XY_id)),]
 
       colnames(XY_id) <- c("X","Y")
       colnames(X)[1] <- "X"
@@ -246,7 +246,7 @@ imputeData = function(a, b){
 #' @param b, group b
 #' @param z, interaction matrix for a and b, rows == a and cols == b
 #' @param community, list with communities/groups or data.frames
-#' @param target, in case of community, provide name of response column
+#' @param response, in case of community, provide name of response column
 #' @param positive, in case of community, provide the positive class
 
 checkInput = function(a = NULL, b = NULL, z = NULL, community = NULL, response = NULL, positive = NULL){

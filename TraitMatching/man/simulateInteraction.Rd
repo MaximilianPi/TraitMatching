@@ -7,7 +7,8 @@
 simulateInteraction(
   species = NULL,
   main = NULL,
-  inter = matrix(c("A1", "B1", "A2", "B2", "A3", "B3"), ncol = 2, nrow = 3, byrow = T),
+  inter = matrix(c("A1", "B1", "A2", "B2", "A3", "B3"), ncol = 2, nrow = 3, byrow =
+    TRUE),
   weights = list(main = 1, inter = c(1, 4, 2)),
   reSim = NULL,
   setSeed = 42,
@@ -24,6 +25,8 @@ simulateInteraction(
 \item{weights}{list of two vectors for main and inter (trait-matching) effect weights}
 
 \item{reSim}{output of simulateInteraction}
+
+\item{setSeed}{use seed in simulation}
 
 \item{...}{arguments passed to createSpecies function, see details}
 }

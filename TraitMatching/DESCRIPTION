@@ -1,8 +1,8 @@
 Package: TraitMatching
 Title: Analysis of bipartite networks
-Version: 0.0.0.9000
+Version: 0.0.1.9000
 Authors@R: person("Maximilian", "Pichler", email = "Maximilian.Pichler@ur.de", role = c("aut", "cre"))
-Description: TraitMatching package
+Description: TraitMatching package, using machine learning to infer species-species interactions from trait-trait interactions.
 Depends: R (>= 3.3.2)
 License: GPL-3
 Encoding: UTF-8
@@ -17,7 +17,10 @@ Imports:
     missForest,
     rowr,
     lgr,
-    reshape2
+    reshape2,
+    knitr,
+    stats,
+    data.table
 RoxygenNote: 7.1.1
 Suggests:
     testthat,
@@ -25,7 +28,6 @@ Suggests:
     ranger,
     xgboost,
     e1071,
-    knitr,
     roxygen2
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)

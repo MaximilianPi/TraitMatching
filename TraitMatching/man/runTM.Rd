@@ -29,7 +29,7 @@ runTM(
 
 \item{metric}{Which predictive measurement should be used for tuning. "AUC" is default. See details.}
 
-\item{parallel}{boolean or numeric. See details.}
+\item{parallel}{boolean or numeric. See details (not yet supported).}
 
 \item{iters}{Number of tuning steps}
 
@@ -43,14 +43,15 @@ runTM(
 Fit, tune and cross-validate a TM model
 }
 \examples{
-
+\dontrun{
 sim = simulateInteraction(weights = list(main = 0.1, inter = c(0.3,0.3,0.3)))
 A = sim$A
 B = sim$B
 Z = sim$binar()
 community = createCommunity(A, B, Z)
 
-result = runTM(community = community)
+result = runTM(community = community, iters = 2L)
+}
 }
 \author{
 Maximilian Pichler

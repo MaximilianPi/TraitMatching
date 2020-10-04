@@ -13,7 +13,7 @@ createSpecies(
   seed = 1337,
   abundance = 2,
   speciesClass = NULL,
-  specialist = T,
+  specialist = TRUE,
   coLin = NULL,
   sampling = function(n) stats::runif(n, 0, 1),
   specRange = c(1, 2)
@@ -42,7 +42,7 @@ createSpecies(
 
 \item{sampling}{sampling function for traits, default runif(n,0,1)}
 
-\item{specRanger}{specialization range, default c(1,2)}
+\item{specRange}{specialization range, default c(1,2)}
 }
 \description{
 create two groups (plants, pollinators) of species
