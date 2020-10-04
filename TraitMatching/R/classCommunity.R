@@ -141,8 +141,16 @@ createInter = function(impData, z, log){
 
       X_id = as.data.frame(X[,1])
       Y_id = as.data.frame(Y[,1])
+      
+      cbind.fill<-function(...){
+        nm <- list(...) 
+        nm<-lapply(nm, as.matrix)
+        n <- max(sapply(nm, nrow)) 
+        do.call(cbind, lapply(nm, function (x) 
+          rbind(x, matrix(, n-nrow(x), ncol(x))))) 
+      }
 
-      XY_id <- rowr::cbind.fill(X_id, Y_id, fill = NA)
+      XY_id <- data.frame(cbind.fill(X_id, Y_id))
       XY_id <- expand.grid(XY_id)
       XY_id <- XY_id[stats::complete.cases(as.matrix(XY_id)),]
 

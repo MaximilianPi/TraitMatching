@@ -15,7 +15,6 @@ Imports:
     mlr3tuning,
     paradox,
     missForest,
-    rowr,
     lgr,
     reshape2,
     knitr,
