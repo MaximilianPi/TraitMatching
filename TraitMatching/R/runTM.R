@@ -72,7 +72,7 @@ runTM = function(community,
   terminator = mlr3tuning::trm("evals", n_evals = iters)
   tuner =
     if(tune == "random") { mlr3tuning::tnr("random_search")
-    } else { mlr3tuning::tnr("grid_search", resolution = 5L) }
+    } else { mlr3tuning::tnr("grid_search", resolution = 2L) }
 
   ## Measurement ##
   measures = getMeasure(metric, type)
