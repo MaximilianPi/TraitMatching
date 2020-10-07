@@ -44,10 +44,15 @@ jobs:
           Rscript -e "install.packages('remotes')" -e "remotes::install_github('r-hub/sysreqs')"
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
-      - name: Install dependencies
+      - name: Install dependencies windows
+        if: runner.os == 'windows-latest'
         run: |
           cd TraitMatching
           Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)" -e "remotes::install_cran('rcmdcheck')" -e "install.packages(c('ranger', 'kknn', 'e1071', 'xgboost'), type='binary')"
+      - name: Install dependencies linux
+        if: ( runner.os == 'macOS-latest' ) || ( runner.os == 'ubuntu-16.04' )
+          cd TraitMatching
+          Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)" -e "remotes::install_cran('rcmdcheck')" -e "install.packages(c('ranger', 'kknn', 'e1071', 'xgboost'))"      
       - name: Install Pkg
         run: |
           cd TraitMatching
