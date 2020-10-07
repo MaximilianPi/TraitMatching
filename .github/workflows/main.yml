@@ -47,7 +47,7 @@ jobs:
       - name: Install dependencies
         run: |
           cd TraitMatching
-          Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)" -e "remotes::install_cran('rcmdcheck')" -e "install.packages(c('ranger', 'kknn', 'e1071', 'xgboost'))"
+          Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)" -e "remotes::install_cran('rcmdcheck')" -e "install.packages(c('ranger', 'kknn', 'e1071', 'xgboost'), type='binary')"
       - name: Install Pkg
         run: |
           cd TraitMatching
