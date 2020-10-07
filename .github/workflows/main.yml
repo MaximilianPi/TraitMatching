@@ -45,12 +45,12 @@ jobs:
           sysreqs=$(Rscript -e "cat(sysreqs::sysreq_commands('DESCRIPTION'))")
           sudo -s eval "$sysreqs"
       - name: Install dependencies windows
-        if: runner.os == 'windows-latest'
+        if: matrix.os == 'windows-latest'
         run: |
           cd TraitMatching
           Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)" -e "remotes::install_cran('rcmdcheck')" -e "install.packages(c('ranger', 'kknn', 'e1071', 'xgboost'), type='binary')"
       - name: Install dependencies linux
-        if: ( runner.os == 'macOS-latest' ) || ( runner.os == 'ubuntu-16.04' )
+        if: ( matrix.os == 'macOS-latest' ) || ( matrix.os == 'ubuntu-16.04' )
         run: |
           cd TraitMatching
           Rscript -e "install.packages('remotes')" -e "remotes::install_deps(dependencies = TRUE)" -e "remotes::install_cran('rcmdcheck')" -e "install.packages(c('ranger', 'kknn', 'e1071', 'xgboost'))"      
