@@ -11,14 +11,12 @@ Imports:
     mlr3,
     mlr3learners,
     mlr3pipelines,
-    mlr3measures,
     mlr3tuning,
     paradox,
     missForest,
-    lgr,
     reshape2,
-    knitr,
     stats,
+    future,
     data.table
 RoxygenNote: 7.1.1
 Suggests:
@@ -27,6 +25,7 @@ Suggests:
     ranger,
     xgboost,
     e1071,
-    roxygen2
+    roxygen2,
+    knitr
 VignetteBuilder: knitr
 Roxygen: list(markdown = TRUE)
