@@ -41,6 +41,8 @@ runTM = function(community,
   )
   tune = match.arg(tune)
   metric = match.arg(metric)
+  if(inherits(community, "regr") && metric == "AUC") metric = "Spear"
+  
   balance = match.arg(balance)
   group = match.arg(group)
   if(balance == "no") balance = FALSE
@@ -142,11 +144,22 @@ runTM = function(community,
 #' @param ... optional arguments for compatibility with the generic function, no function implemented
 #' @export
 predict.TraitMatchingResult = function(object, newdata = NULL, ...) {
-  if(is.null(newdata)) {
-    return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)[[1]]$data$prob[,1]))
+  
+  if(object$type == "classif") {
+  
+    if(is.null(newdata)) {
+      return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)$data$prob[,1]))
+    } else {
+      return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict_newdata(newdata)$data$prob[,1]))
+    }
+  
   } else {
-    new_task 
-    return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$(new_task)[[1]]$data$prob[,1]))
+    
+    if(is.null(newdata)) {
+      return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)$data$response))
+    } else {
+      return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict_newdata(newdata)$data$response))
+    }
   }
 }
 

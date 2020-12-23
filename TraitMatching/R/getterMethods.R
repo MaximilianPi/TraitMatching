@@ -4,10 +4,9 @@ getEnsemble = function(base, models) {
     base$param_set$values = tmp$param_set$values
     return( mlr3pipelines::PipeOpLearner$new(base$clone(deep = TRUE), id = paste0(tmp$id,"_", j))  )
   })
-  
   avg = mlr3pipelines::po(paste0(base$task_type, "avg"), innum=length(models))
   ensemble = mlr3pipelines::`%>>%`(mlr3pipelines::gunion(raw), avg)
-  return(ensemble)
+  return(mlr3pipelines::GraphLearner$new(ensemble))
 }
 
 
