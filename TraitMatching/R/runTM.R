@@ -27,7 +27,8 @@ runTM = function(community,
                  iters = 20L,
                  crossValidation = list(
                    outer = list(method = "CV", iters = 10),
-                   inner = list(method = "CV", iters = 3)),
+                   inner = list(method = "CV", iters = 3),
+                   block="AB"),
                  balance = c("no", "oversample", "undersample", "smote"),
                  seed = 42){
   
@@ -66,7 +67,7 @@ runTM = function(community,
 
 
   ## resample strategy ##
-  resampleStrat = getResampleStrategy(crossValidation)
+  resampleStrat = getResampleStrategy(crossValidation, community$data[, c(1,2)], task)
 
   ## Tuner ##
   terminator = mlr3tuning::trm("evals", n_evals = iters)

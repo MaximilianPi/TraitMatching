@@ -19,12 +19,56 @@ getMeasure = function(metric, type) {
   return(measure)
 }
 
-getResampleStrategy = function(crossValidation) {
+getResampleStrategy = function(crossValidation, species, task) {
   parseResample = function(method, iters) {
     if(method == "CV") return(mlr3::rsmp("cv", folds = iters))
   }
-  outer = do.call(parseResample, crossValidation$outer)
+  
+  createSampleOne = function(species, iters, w) {
+    if(length(w) == 1) {
+      sub = species[[w]]
+      SubSp = length(unique(sub))/iters
+      OuterSp = data.frame(matrix(NA, iters, ceiling(SubSp)))
+      
+      lenSp = length(unique(sub))
+      Sp = matrix(c( unique(sub), rep(NA,  ceiling(SubSp)*iters - lenSp)), ncol = ceiling(SubSp), nrow = iters)
+      test_indices = lapply(1:iters, function(i) which(sub %in% levels(sub)[Sp[i,]], arr.ind = TRUE ))
+      train_indices = lapply(1:iters, function(i) which(!sub %in% levels(sub)[Sp[i,]], arr.ind = TRUE ))
+    } else {
+      sub1 = species[[1]]
+      sub2 = species[[2]]
+      SubSp1 = length(unique(sub1))/iters
+      SubSp2 = length(unique(sub2))/iters
+      OuterSp1 = data.frame(matrix(NA, iters, ceiling(SubSp1)))
+      OuterSp2 = data.frame(matrix(NA, iters, ceiling(SubSp2)))
+      
+      lenSp1 = length(unique(sub1))
+      lenSp2 = length(unique(sub2))
+      Sp1 = matrix(c( unique(sub1), rep(NA,  ceiling(SubSp1)*iters - lenSp1)), ncol = ceiling(SubSp1), nrow = iters)
+      Sp2 = matrix(c( unique(sub2), rep(NA,  ceiling(SubSp2)*iters - lenSp2)), ncol = ceiling(SubSp2), nrow = iters)
+      test_indices = lapply(1:iters, function(i) c(which(sub1 %in% levels(sub1)[Sp1[i,]] | sub2 %in% levels(sub2)[Sp2[i,]], arr.ind = TRUE )))
+      train_indices = lapply(1:iters, function(i) c(which(!(sub1 %in% levels(sub1)[Sp1[i,]])  & !(sub2 %in% levels(sub2)[Sp2[i,]]), arr.ind = TRUE )))
+    }
+    
+    outer = mlr3::rsmp("custom")
+    outer$instantiate(task, train_indices,  test_indices)
+    return(outer)
+  }
+  
+  if(crossValidation$block == "") {
+    outer = do.call(parseResample, crossValidation$outer)
+  }
   inner = do.call(parseResample, crossValidation$inner)
+  
+  if(crossValidation$block == "A") {
+    outer = createSampleOne(species, crossValidation$outer$iters, w = 1)
+  } else {
+    outer = createSampleOne(species, crossValidation$outer$iters, w = 2)
+  }
+  
+  if(crossValidation$block == "AB") {
+    outer = createSampleOne(species, crossValidation$outer$iters, w = c(1,2))
+  }
   return(list(outer = outer, inner = inner))
 }
 
