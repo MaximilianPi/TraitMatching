@@ -14,6 +14,7 @@ runTM(
   iters = 20L,
   crossValidation = list(outer = list(method = "CV", iters = 10), inner = list(method =
     "CV", iters = 3)),
+  group = c("X", "Y", "I"),
   balance = c("no", "oversample", "undersample", "smote"),
   seed = 42
 )
@@ -34,6 +35,8 @@ runTM(
 \item{iters}{Number of tuning steps}
 
 \item{crossValidation}{List for CV plan. See details.}
+
+\item{group}{blocked-CV design, block for X or Y species, or not: I}
 
 \item{balance}{How to balance classes. Default is oversampling "Over".}
 

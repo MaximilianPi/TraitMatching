@@ -10,6 +10,7 @@
 #' @param parallel boolean or numeric. See details (not yet supported).
 #' @param iters Number of tuning steps
 #' @param crossValidation List for CV plan. See details.
+#' @param group blocked-CV design, block for X or Y species, or not: I
 #' @param balance How to balance classes. Default is oversampling "Over".
 #' @param seed set seed
 #'
@@ -28,6 +29,7 @@ runTM = function(community,
                  crossValidation = list(
                    outer = list(method = "CV", iters = 10),
                    inner = list(method = "CV", iters = 3)),
+                 group = c("X", "Y", "I"),
                  balance = c("no", "oversample", "undersample", "smote"),
                  seed = 42){
   
@@ -39,7 +41,10 @@ runTM = function(community,
   )
   tune = match.arg(tune)
   metric = match.arg(metric)
+  if(inherits(community, "regr") && metric == "AUC") metric = "Spear"
+  
   balance = match.arg(balance)
+  group = match.arg(group)
   if(balance == "no") balance = FALSE
 
   out = list()
@@ -48,12 +53,21 @@ runTM = function(community,
 
   out$type = type
   
+  if(parallel) {
+    if(is.numeric(parallel)) future::plan("multiprocess", workers = parallel)
+    else future::plan("multiprocess")
+  }
+  
   if(type == "regr") balance = FALSE
-
+  
   task =
-    if(type == "classif") { mlr3::TaskClassif$new(id = "classif_community", backend = community$data[, -c(1,2)], target = community$target, positive = "positive")
-    } else { mlr3::TaskRegr$new(id = "regr_community", backend = community$data[, -c(1,2)], target = community$target) }
-
+    if(type == "classif") { mlr3::TaskClassif$new(id = "classif_community", backend = community$data, target = community$target, positive = "positive")
+    } else { mlr3::TaskRegr$new(id = "regr_community", backend = community$data, target = community$target) }
+  
+  if(group != "I") task$col_roles$group = group
+  task$col_roles$feature = setdiff(task$col_roles$feature, c("X", "Y"))
+  
+  
   ## transform task ##
   out$encode = mlr3pipelines::po('encode')
   task = out$encode$train(list(task))[[1]]
@@ -89,7 +103,7 @@ runTM = function(community,
     pars = lapply(pars, function(p) p$add(balanceLearner$pars))
     learners = lapply(learners, function(l) mlr3pipelines::GraphLearner$new(mlr3pipelines::`%>>%`(balanceLearner$po, l) ))
   }
-  learners = lapply(1:length(learners),
+  learners2 = lapply(1:length(learners),
     function(i) {
       mlr3tuning::AutoTuner$new(learners[[i]],
                                 resampling = resampleStrat$inner,
@@ -97,19 +111,58 @@ runTM = function(community,
                                 terminator = terminator,
                                 tuner = tuner,
                                 measure = measures) })
-
-  design = mlr3::benchmark_grid(task, learners, resamplings = resampleStrat$outer)
+  
+  design = mlr3::benchmark_grid(task, learners2, resamplings = resampleStrat$outer)
   result = mlr3::benchmark(design, store_models = TRUE)
   
   summary = data.table::as.data.table(result,measures = measures, reassemble_learners = TRUE, convert_predictions = TRUE, predict_sets = "test")
   res = result$aggregate(measures)
   
+  
+  ## build full model ensembles ## 
+  
+  ensembles = lapply(1:length(learners), function(i) getEnsemble(base = learners[[i]]$clone(), 
+                                                                 models = result$resample_results$resample_result[[i]]$learners))
+  
+  names(ensembles) = method
+  
+  .n = lapply(ensembles, function(e) e$train(task))
+  
+  out$ensembles = ensembles
+  out$task = task
   out$design = design
   out$result = list(result_raw = result, tabular = summary, result = res)
   out$extra = extra
   class(out) = "TraitMatchingResult"
   return(out)
 }
+
+
+#' Predict from a fitted TraitMatchingResult object
+#' 
+#' @param object a model fitted by \code{\link{runTM}}
+#' @param ... optional arguments for compatibility with the generic function, no function implemented
+#' @export
+predict.TraitMatchingResult = function(object, newdata = NULL, ...) {
+  
+  if(object$type == "classif") {
+  
+    if(is.null(newdata)) {
+      return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)$data$prob[,1]))
+    } else {
+      return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict_newdata(newdata)$data$prob[,1]))
+    }
+  
+  } else {
+    
+    if(is.null(newdata)) {
+      return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)$data$response))
+    } else {
+      return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict_newdata(newdata)$data$response))
+    }
+  }
+}
+
 
 #' Print a fitted TraitMatchingResult model
 #' 
