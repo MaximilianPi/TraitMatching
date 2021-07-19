@@ -1,4 +1,16 @@
 
+getEnsemble = function(base, models) {
+  raw = lapply(1:length(models), function(j) {
+    tmp = models[[j]]
+    base$param_set$values = tmp$param_set$values
+    return( mlr3pipelines::PipeOpLearner$new(base$clone(deep = TRUE), id = paste0(tmp$id,"_", j))  )
+  })
+  avg = mlr3pipelines::po(paste0(base$task_type, "avg"), innum=length(models))
+  ensemble = mlr3pipelines::`%>>%`(mlr3pipelines::gunion(raw), avg)
+  return(mlr3pipelines::GraphLearner$new(ensemble))
+}
+
+
 getMeasure = function(metric, type) {
   # c("AUC", "R2", "Spear")
   measure =
@@ -71,6 +83,7 @@ getResampleStrategy = function(crossValidation, species, task) {
   }
   return(list(outer = outer, inner = inner))
 }
+
 
 
 getBalanceMethod = function(balance = c("oversample", "undersample", "smote")) {
@@ -198,4 +211,5 @@ getBRTparamSet = function(extra, prefix) {
   pars$add_dep(pf("rate_drop"), pf("booster"), cond = paradox::CondEqual$new("dart"))
   
   return(pars)
+
 }
