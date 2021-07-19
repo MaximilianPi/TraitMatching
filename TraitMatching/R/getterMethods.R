@@ -205,7 +205,7 @@ getBRTparamSet = function(extra, prefix) {
            paradox::ParamDbl$new(pf("rate_drop"), lower = 0.0, 1.0),
            paradox::ParamDbl$new(pf("lambda_bias"), lower = 0.0,upper = 5.0),
            paradox::ParamInt$new(pf("max_depth"), lower = 1L, upper = 50L ),
-           paradox::ParamInt$new(pf("nrounds"), lower = 1L, upper = 80L))
+           paradox::ParamInt$new(pf("nrounds"), lower = 1L, upper = 150L))
     )
   pars$add_dep(pf("feature_selector"), pf("booster"), cond = paradox::CondEqual$new("gblinear"))
   pars$add_dep(pf("skip_drop"), pf("booster"), cond = paradox::CondEqual$new("dart"))

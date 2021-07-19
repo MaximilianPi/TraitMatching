@@ -15,6 +15,14 @@
 #' @param seed set seed
 #'
 #' @example /inst/examples/example-runTM.R
+#' @import mlr3 
+#' @import mlr3tuning 
+#' @import mlr3learners 
+#' @import mlr3pipelines
+#' @import mlr3measures
+#' @import mlr3misc
+#' @import lgr
+#' @import bbotk
 #' @author Maximilian Pichler
 #' @export
 
@@ -32,8 +40,10 @@ runTM = function(community,
                  group = c("X", "Y", "I"),
                  balance = c("no", "oversample", "undersample", "smote"),
                  seed = 42){
-  
   set.seed(seed)
+  
+  lgr::get_logger("mlr3")$set_threshold("warn")
+  lgr::get_logger("bbotk")$set_threshold("warn")
 
   stopifnot(
     any(method %in% c("RF", "SVM", "kNN", "DNN", "BRT")),

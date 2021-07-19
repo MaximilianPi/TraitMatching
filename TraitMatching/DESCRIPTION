@@ -1,6 +1,6 @@
 Package: TraitMatching
 Title: Analysis of bipartite networks
-Version: 0.0.1.9000
+Version: 0.0.2.9000
 Authors@R: person("Maximilian", "Pichler", email = "Maximilian.Pichler@ur.de", role = c("aut", "cre"))
 Description: TraitMatching package, using machine learning to infer species-species interactions from trait-trait interactions.
 Depends: R (>= 3.3.2)

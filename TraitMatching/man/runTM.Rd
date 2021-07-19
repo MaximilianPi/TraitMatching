@@ -24,7 +24,7 @@ runTM(
 
 \item{settings}{list of settings for the machine learning model. See details}
 
-\item{method}{Which ML algorithm to be used. RF, knn, SVM, DNN, CNN, boost, ngBinDNN, naive, or CNN. See details. "RF" is default}
+\item{method}{Which ML algorithm to be used. RF, kNN, SVM, DNN, CNN, boost, ngBinDNN, naive, or CNN. See details. "RF" is default}
 
 \item{tune}{How to tune ML parameters. We support only "random" at the moment.}
 
