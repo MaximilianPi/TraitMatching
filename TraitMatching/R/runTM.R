@@ -4,7 +4,7 @@
 #'
 #' @param community object of class classCommunity created by [TraitMatching::createCommunity()]
 #' @param settings list of settings for the machine learning model. See details
-#' @param method Which ML algorithm to be used. RF, knn, SVM, DNN, CNN, boost, ngBinDNN, naive, or CNN. See details. "RF" is default
+#' @param method Which ML algorithm to be used. RF, kNN, SVM, DNN, CNN, boost, ngBinDNN, naive, or CNN. See details. "RF" is default
 #' @param tune How to tune ML parameters. We support only "random" at the moment.
 #' @param metric Which predictive measurement should be used for tuning. "AUC" is default. See details.
 #' @param parallel boolean or numeric. See details (not yet supported).
@@ -54,8 +54,8 @@ runTM = function(community,
   out$type = type
   
   if(parallel) {
-    if(is.numeric(parallel)) future::plan("multiprocess", workers = parallel)
-    else future::plan("multiprocess")
+    if(is.numeric(parallel)) future::plan("multisession", workers = parallel)
+    else future::plan("multisession")
   }
   
   if(type == "regr") balance = FALSE
@@ -66,7 +66,7 @@ runTM = function(community,
   
   if(group != "I") task$col_roles$group = group
   task$col_roles$feature = setdiff(task$col_roles$feature, c("X", "Y"))
-  
+  if(group == "I") task$col_roles$stratum = community$target
   
   ## transform task ##
   out$encode = mlr3pipelines::po('encode')
@@ -80,7 +80,8 @@ runTM = function(community,
 
 
   ## resample strategy ##
-  resampleStrat = getResampleStrategy(crossValidation)
+  crossValidation$block=""
+  resampleStrat = getResampleStrategy(crossValidation, community$data[,c(1,2)], task)
 
   ## Tuner ##
   terminator = mlr3tuning::trm("evals", n_evals = iters)
@@ -131,7 +132,7 @@ runTM = function(community,
   out$ensembles = ensembles
   out$task = task
   out$design = design
-  out$result = list(result_raw = result, tabular = summary, result = res)
+  out$result = list(result_raw = result, tabular = summary, result = res, learners = learners)
   out$extra = extra
   class(out) = "TraitMatchingResult"
   return(out)
@@ -148,19 +149,23 @@ predict.TraitMatchingResult = function(object, newdata = NULL, ...) {
   if(object$type == "classif") {
   
     if(is.null(newdata)) {
-      return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)$data$prob[,1]))
+      pred = (sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)$data$prob[,1]))
     } else {
-      return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict_newdata(newdata)$data$prob[,1]))
+      pred = (sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict_newdata(newdata)$data$prob[,1]))
     }
   
   } else {
     
     if(is.null(newdata)) {
-      return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)$data$response))
+      pred = (sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)$data$response))
     } else {
-      return(sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict_newdata(newdata)$data$response))
+      pred = (sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict_newdata(newdata)$data$response))
     }
   }
+  
+  pred = data.frame(pred)
+  colnames(pred) = names(object$ensembles)
+  return(pred)
 }
 
 
