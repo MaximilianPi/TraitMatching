@@ -29,11 +29,11 @@ findInteractions = function(model,data =NULL, globalInteractions=TRUE, depth=Inf
                                          grid_size =gridSize,
                                          work_list = specificInteractions,
                                          any_n_times = nTimes,
-                                         target = result$task$target_names,
+                                         target = model$task$target_names,
                                          parallel = parallel)
       return(result)
     })
-  names(results) = names(result$ensembles)
+  names(results) = names(model$ensembles)
   return(results)
 }
 pairwise_interaction = function(data = NULL,
