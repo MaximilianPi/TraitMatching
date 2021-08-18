@@ -139,6 +139,8 @@ runTM = function(community,
   
   .n = lapply(ensembles, function(e) e$train(task))
   
+  future::plan("sequential")
+  
   out$ensembles = ensembles
   out$task = task
   out$design = design

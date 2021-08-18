@@ -69,7 +69,7 @@ pairwise_interaction = function(data = NULL,
   var_1 = data.frame(var_1)
   colnames(var_1) = colnames(data)[1:n_col]
   pred = predict_function(model, newdata = var_1)
-  var_1 = apply(matrix(pred, ncol = grid_size),2, mean)
+  var_1 = apply(matrix(pred, ncol = grid_size),2, function(v) mean(v, na.rm=TRUE))
 
   combines = sapply(pair_b_ind, function(k){
     # PD_a_b(x_a_b) for all b
@@ -79,7 +79,7 @@ pairwise_interaction = function(data = NULL,
     var_1_2 = data.frame(var_1_2)
     colnames(var_1_2) = colnames(data)[1:n_col]
     pred = predict_function(model, newdata = var_1_2)
-    var_1_2 = apply(matrix(pred, ncol = grid_size),2, mean)
+    var_1_2 = apply(matrix(pred, ncol = grid_size),2, function(v) mean(v, na.rm=TRUE))
 
     # PD_b(x_b) for all b
     var_2 = matrix(0, nrow = size_matrix, n_col)
@@ -89,7 +89,7 @@ pairwise_interaction = function(data = NULL,
     colnames(var_2) = colnames(data)[1:n_col]
 
     pred = predict_function(model, newdata = var_2)
-    var_2 = apply(matrix(pred, ncol = grid_size),2, mean)
+    var_2 = apply(matrix(pred, ncol = grid_size),2, function(v) mean(v, na.rm=TRUE))
 
     return(list(scale(var_1_2,scale = F), scale(var_2,scale = F)))
 
@@ -138,7 +138,7 @@ any_interaction = function(data = NULL,
   colnames(var_1) = colnames(data)[1:n_col]
   pred = predict_function(model, newdata = var_1)
   
-  var_1 = apply(seq_along,1 , function(i) apply(matrix(pred[i], ncol = grid_size),2, mean))
+  var_1 = apply(seq_along,1 , function(i) apply(matrix(pred[i], ncol = grid_size),2, function(v) mean(v, na.rm=TRUE)))
 
   # PD_(-a)(x_(-a)) for all a
   var_rest  = matrix(0, nrow = size_matrix*n_col, n_col)
@@ -151,7 +151,7 @@ any_interaction = function(data = NULL,
   colnames(var_rest) = colnames(data)[1:n_col]
 
   pred = predict_function(model, newdata = var_rest)
-  var_rest = apply(seq_along,1 , function(i) apply(matrix(pred[i], ncol = grid_size),2, mean))
+  var_rest = apply(seq_along,1 , function(i) apply(matrix(pred[i], ncol = grid_size),2, function(v) mean(v, na.rm=TRUE)))
 
   var_1 = apply(var_1, 2, function(x) scale(x, scale = FALSE))
   var_rest = apply(var_rest, 2, function(x) scale(x, scale = FALSE))
@@ -203,7 +203,7 @@ get_Interaction_Strengths = function(data,
                           FUN = function(i, data, model, target, grid_size,predict_function) unlist(any_interaction(data, model, target = target, grid_size = grid_size,predict_function=predict_function)),
                           data, model, target, grid_size,predict_function)
     }
-    mean_overall = apply(any_result, 1, mean)
+    mean_overall = apply(any_result, 1, function(v) mean(v, na.rm=TRUE))
     mean_overall = sort(mean_overall,decreasing = T)
 
     out$mean_overall = mean_overall
