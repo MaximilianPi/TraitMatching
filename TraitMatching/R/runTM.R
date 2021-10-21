@@ -139,7 +139,29 @@ runTM = function(community,
   
   .n = lapply(ensembles, function(e) e$train(task))
   
+  ## build single best models ## 
+  
+  models = lapply(res$resample_result, function(rr) {
+    
+    m = rr$score(measures)
+    if(!inherits(measures, "list")) {
+      scores = m[[measures$id]]
+      if(measures$minimize) ind = which.max(scores)
+      else ind = which.min(scores)
+    } else {
+      measures2 = measures[[1]]
+      scores = m[[measures2$id]]
+      if(measures2$minimize) ind = which.max(scores)
+      else ind = which.min(scores)
+    }
+    model = rr$learners[[ind]]
+    model$train(task)
+    return(model)
+  })
+  
   out$ensembles = ensembles
+  out$models = models
+  out$pred_ensembles = TRUE
   out$task = task
   out$design = design
   out$result = list(result_raw = result, tabular = summary, result = res, learners = learners)
@@ -159,17 +181,21 @@ predict.TraitMatchingResult = function(object, newdata = NULL, ...) {
   if(object$type == "classif") {
   
     if(is.null(newdata)) {
-      pred = (sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)$data$prob[,1]))
+      if(object$pred_ensembles) pred = (sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)$data$prob[,1]))
+      else pred = (sapply(1:length(object$models), function(i) object$models[[i]]$predict(object$task)$data$prob[,1]))
     } else {
-      pred = (sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict_newdata(newdata)$data$prob[,1]))
+      if(object$pred_ensembles) pred = (sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict_newdata(newdata)$data$prob[,1]))
+      else pred = (sapply(1:length(object$models), function(i) object$models[[i]]$predict_newdata(newdata)$data$prob[,1]))
     }
   
   } else {
     
     if(is.null(newdata)) {
-      pred = (sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)$data$response))
+      if(object$pred_ensembles) pred = (sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict(object$task)$data$response))
+      else pred = (sapply(1:length(object$models), function(i) object$models[[i]]$predict(object$task)$data$response))
     } else {
-      pred = (sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict_newdata(newdata)$data$response))
+      if(object$pred_ensembles) pred = (sapply(1:length(object$ensembles), function(i) object$ensembles[[i]]$predict_newdata(newdata)$data$response))
+      else pred = (sapply(1:length(object$models), function(i) object$models[[i]]$predict_newdata(newdata)$data$response))
     }
   }
   
