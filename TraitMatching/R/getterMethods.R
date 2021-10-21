@@ -2,7 +2,7 @@
 getEnsemble = function(base, models) {
   raw = lapply(1:length(models), function(j) {
     tmp = models[[j]]
-    base$param_set$values = tmp$param_set$values
+    base$param_set$values = tmp$learner$param_set$values
     return( mlr3pipelines::PipeOpLearner$new(base$clone(deep = TRUE), id = paste0(tmp$id,"_", j))  )
   })
   avg = mlr3pipelines::po(paste0(base$task_type, "avg"), innum=length(models))
@@ -114,8 +114,13 @@ getBaseLearners = function(method = "RF", type = c("classif", "regr")) {
                     DNN = paste0(type,""),
                     BRT = paste0(type,".xgboost"),
   )
-  if(type=="classif") return(mlr3::lrn(learner, predict_type = "prob"))
-  else return(mlr3::lrn(learner))
+  if(method != "RF") {
+    if(type=="classif") return(mlr3::lrn(learner, predict_type = "prob"))
+    else return(mlr3::lrn(learner))
+  } else {
+    if(type=="classif") return(mlr3::lrn(learner, predict_type = "prob", importance = "impurity"))
+    else return(mlr3::lrn(learner, importance = "impurity"))
+  }
 }
 
 

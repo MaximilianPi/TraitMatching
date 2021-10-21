@@ -22,15 +22,16 @@ test_model = function(method, metric, community, tune, balance="smote") {
 
 
 
-tests = list(
-  list("RF", "AUC", communityC, "random", "smote"),
-  list(c("RF", "BRT", "BRT"), "AUC", communityC, "random", "smote"),
-  list("RF", "R2", communityR, "grid", "no"),
-  list(c("RF"), "R2", communityR, "random", "no"),
-  list(c("kNN", "RF", "SVM", "BRT"), "Spear", communityR, "grid", "no"),
-)
+
 
 testthat::test_that('runTM', {
+  tests = list(
+    list("RF", "AUC", communityC, "random", "smote"),
+    list(c("RF", "BRT", "BRT"), "AUC", communityC, "random", "smote"),
+    list("RF", "R2", communityR, "grid", "no"),
+    list(c("RF"), "R2", communityR, "random", "no"),
+    list(c("kNN", "RF", "SVM", "BRT"), "Spear", communityR, "grid", "no"),
+  )
   for(i in 1:length(tests)) {
     test_model(tests[[i]][[1]], tests[[i]][[2]], tests[[i]][[3]], tests[[i]][[4]], tests[[i]][[5]])
   }

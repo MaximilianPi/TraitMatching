@@ -158,6 +158,7 @@ runTM = function(community,
     model$train(task)
     return(model)
   })
+  future::plan("sequential")
   
   out$ensembles = ensembles
   out$models = models
