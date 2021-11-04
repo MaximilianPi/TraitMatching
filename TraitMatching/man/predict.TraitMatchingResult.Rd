@@ -9,6 +9,8 @@
 \arguments{
 \item{object}{a model fitted by \code{\link{runTM}}}
 
+\item{newdata}{newdata for predictions}
+
 \item{...}{optional arguments for compatibility with the generic function, no function implemented}
 }
 \description{

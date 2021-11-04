@@ -18,6 +18,8 @@ findInteractions(
 \arguments{
 \item{model}{object fitted by \code{\link[=runTM]{runTM()}}}
 
+\item{data}{data used to train the model, e.g. \code{community$data}}
+
 \item{globalInteractions}{calculate global interaction strengths of variables (similar to feature importance but for interactions)}
 
 \item{depth}{calculating specific interactions for the top (depth) variables with the highest global interaction strengths}

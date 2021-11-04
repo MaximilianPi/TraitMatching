@@ -33,9 +33,9 @@ runTM = function(community,
                  tune = c("random","grid"),
                  metric = c("AUC", "R2", "Spear"),
                  parallel = TRUE,
-                 iters = 20L,
+                 iters = 5L,
                  crossValidation = list(
-                   outer = list(method = "CV", iters = 10),
+                   outer = list(method = "CV", iters = 3),
                    inner = list(method = "CV", iters = 3)),
                  group = c("X", "Y", "I"),
                  balance = c("no", "oversample", "undersample", "smote"),
@@ -185,6 +185,7 @@ runTM = function(community,
 #' Predict from a fitted TraitMatchingResult object
 #' 
 #' @param object a model fitted by \code{\link{runTM}}
+#' @param newdata newdata for predictions
 #' @param ... optional arguments for compatibility with the generic function, no function implemented
 #' @export
 predict.TraitMatchingResult = function(object, newdata = NULL, ...) {

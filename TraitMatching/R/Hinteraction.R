@@ -2,6 +2,7 @@
 #' 
 #' find interactions between predictors by using Friedmans H-statistic
 #' @param model object fitted by [TraitMatching::runTM()]
+#' @param data data used to train the model, e.g. `community$data`
 #' @param globalInteractions calculate global interaction strengths of variables (similar to feature importance but for interactions)
 #' @param depth calculating specific interactions for the top (depth) variables with the highest global interaction strengths
 #' @param gridSize samples of predictors' values
@@ -50,8 +51,6 @@ pairwise_interaction = function(data = NULL,
   if(!is.null(target)) data = data[,-which(colnames(data) == target, arr.ind = TRUE)]
   pair_a_ind = which(colnames(data) == pairs$a, arr.ind = TRUE)
   pair_b_ind = sapply(pairs$b, function(i) which(colnames(data)==i, arr.ind = T))
-
-
 
 
   n_row = nrow(data)
