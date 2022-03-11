@@ -74,8 +74,11 @@ runTM = function(community,
     if(type == "classif") { mlr3::TaskClassif$new(id = "classif_community", backend = community$data, target = community$target, positive = "positive")
     } else { mlr3::TaskRegr$new(id = "regr_community", backend = community$data, target = community$target) }
   
+
+  
+  
   if(group != "I") task$col_roles$group = group
-  task$col_roles$feature = setdiff(task$col_roles$feature, c("X", "Y"))
+  if(sum(c("X", "Y") %in% colnames(community$data)) > 1)  task$col_roles$feature = setdiff(task$col_roles$feature, c("X", "Y"))
   if(group == "I") task$col_roles$stratum = community$target
   
   ## transform task ##

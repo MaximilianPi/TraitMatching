@@ -75,7 +75,7 @@ getResampleStrategy = function(crossValidation, species, task) {
   
   if(crossValidation$block == "A") {
     outer = createSampleOne(species, crossValidation$outer$iters, w = 1)
-  } else {
+  } else if(crossValidation$block == "B") {
     outer = createSampleOne(species, crossValidation$outer$iters, w = 2)
   }
   
