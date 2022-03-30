@@ -24,7 +24,10 @@ createCommunity = function(a = NULL, b = NULL, z = NULL, community = NULL, respo
   interTmpDataList = list()
   z_list = list()
 
-  if(!is.null(a)) impData[[1]] = imputeData(a,b)
+  if(!is.null(a)) {
+    if(impute) impData[[1]] = imputeData(a,b)
+    else impData = list(a = a, b = b)
+  }
 
   if(is.null(a) && !is.null(community)){
     if(is.data.frame(community)){
@@ -230,13 +233,13 @@ imputeData = function(a, b){
   Y <- Y[!duplicated(as.factor(Y[,1])),]
   last_col_Y <- 2:ncol(Y)
 
-  X_imp <- missForest::missForest(X[,last_col_X])
-  Y_imp <- missForest::missForest(Y[,last_col_Y])
+  X_imp <- missRanger::missRanger(X[,last_col_X])
+  Y_imp <- missRanger::missRanger(Y[,last_col_Y])
 
-  X_imp <- cbind(X[,1], X_imp$ximp)
+  X_imp <- cbind(X[,1], X_imp)
   colnames(X_imp)[1] <- colnames(X)[1]
 
-  Y_imp <- cbind(Y[,1], Y_imp$ximp)
+  Y_imp <- cbind(Y[,1], Y_imp)
   colnames(Y_imp)[1] <- colnames(Y)[1]
 
   out = list(a = X_imp, b = Y_imp)
