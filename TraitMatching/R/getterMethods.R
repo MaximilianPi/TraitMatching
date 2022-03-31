@@ -215,6 +215,7 @@ getBRTparamSet = function(extra, prefix) {
   pars$add_dep(pf("feature_selector"), pf("booster"), cond = paradox::CondEqual$new("gblinear"))
   pars$add_dep(pf("skip_drop"), pf("booster"), cond = paradox::CondEqual$new("dart"))
   pars$add_dep(pf("rate_drop"), pf("booster"), cond = paradox::CondEqual$new("dart"))
+  pars$add_dep(pf("lambda_bias"), pf("booster"), cond = paradox::CondEqual$new("gblinear"))
   
   return(pars)
  # test

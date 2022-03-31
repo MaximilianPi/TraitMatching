@@ -26,7 +26,7 @@ createCommunity = function(a = NULL, b = NULL, z = NULL, community = NULL, respo
 
   if(!is.null(a)) {
     if(impute) impData[[1]] = imputeData(a,b)
-    else impData = list(a = a, b = b)
+    else impData = list(list(a = a, b = b))
   }
 
   if(is.null(a) && !is.null(community)){
@@ -167,7 +167,7 @@ createInter = function(impData, z, log){
       colnames(XY_id) <- make.names(names(XY_id), unique = T)
 
 
-      if(!is.data.frame(z)) Z <- as.matrix(z[[i]])
+      if(inherits(z, "list")) Z <- as.matrix(z[[i]])
       else Z <- as.matrix(z)
 
       Z_m <- subset(reshape2::melt(Z))
