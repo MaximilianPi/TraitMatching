@@ -63,7 +63,7 @@ pairwise_interaction = function(data = NULL,
 
   # PD_a(x_a)
   var_1 = matrix(0, nrow = size_matrix, n_col)
-  var_1[, pair_a_ind] = rep(data[samples, pair_a_ind], n_row)
+  var_1[, pair_a_ind] = rep(data[samples, pair_a_ind], rep(n_row,grid_size))
   var_1[, -pair_a_ind] = apply(data[, -pair_a_ind], 2, function(x) rep(x, grid_size))
   var_1 = data.frame(var_1)
   colnames(var_1) = colnames(data)[1:n_col]
