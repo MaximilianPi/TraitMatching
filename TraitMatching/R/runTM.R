@@ -79,7 +79,7 @@ runTM = function(community,
   
   if(group != "I") task$col_roles$group = group
   if(sum(c("X", "Y") %in% colnames(community$data)) > 1)  task$col_roles$feature = setdiff(task$col_roles$feature, c("X", "Y"))
-  if(group == "I") task$col_roles$stratum = community$target
+  if((group == "I")  && (type != "regr" )) task$col_roles$stratum = community$target
   
   ## transform task ##
   out$encode = mlr3pipelines::po('encode')

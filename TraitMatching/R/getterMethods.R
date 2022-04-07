@@ -200,17 +200,17 @@ getBRTparamSet = function(extra, prefix) {
   
   pars = 
     paradox::ParamSet$new(
-      list(paradox::ParamDbl$new(pf("alpha"), lower = 0.0, upper = 0.5),
+      list(paradox::ParamDbl$new(pf("alpha"), lower = 0.05, upper = 0.5),
         #   paradox::ParamFct$new(pf("booster"), levels = c("gbtree", "gblinear", "dart"), default = "gbtree"),
            paradox::ParamDbl$new(pf("eta"),lower = 0.05, upper = 1.0),
         #   paradox::ParamFct$new(pf("feature_selector"), levels = c("cyclic", "shuffle"), default = "cyclic"),
-           paradox::ParamDbl$new(pf("gamma"), lower = 0.0, upper = 5.0),
-           paradox::ParamDbl$new(pf("lambda"), lower = 0.0, 2.0),
+        #  paradox::ParamDbl$new(pf("gamma"), lower = 0.001, upper = 5.0),
+           paradox::ParamDbl$new(pf("lambda"), lower = 0.004, 2.0),
         #   paradox::ParamDbl$new(pf("skip_drop"), lower = 0.0, 1.0),
         #   paradox::ParamDbl$new(pf("rate_drop"), lower = 0.0, 1.0),
         #   paradox::ParamDbl$new(pf("lambda_bias"), lower = 0.0,upper = 5.0),
-           paradox::ParamInt$new(pf("max_depth"), lower = 3L, upper = 50L ),
-           paradox::ParamInt$new(pf("nrounds"), lower = 5L, upper = 150L))
+           paradox::ParamInt$new(pf("max_depth"), lower = 1L, upper = 50L ),
+           paradox::ParamInt$new(pf("nrounds"), lower = 3L, upper = 150L))
     )
   #pars$add_dep(pf("feature_selector"), pf("booster"), cond = paradox::CondEqual$new("gblinear"))
   #pars$add_dep(pf("skip_drop"), pf("booster"), cond = paradox::CondEqual$new("dart"))
