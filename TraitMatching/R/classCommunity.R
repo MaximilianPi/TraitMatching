@@ -170,7 +170,7 @@ createInter = function(impData, z, log){
       if(inherits(z, "list")) Z <- as.matrix(z[[i]])
       else Z <- as.matrix(z)
 
-      Z_m <- subset(reshape2::melt(Z))
+      Z_m <- subset(reshape2::melt(Z, na.rm = TRUE))
       Z_m <- as.data.frame(Z_m)
       colnames(Z_m) <- c("X","Y")
 
